@@ -504,7 +504,7 @@ export class mysmb extends plugin {
             //行迹
             let trees = []
             v.skills.map((xj) => {
-                if (['属性加成', '额外能力'].includes(xj.remake) && xj.is_activated) trees.push(xj.point_id)
+                if (xj.is_activated) trees.push(xj.point_id)
             })
 
             //遗器主词条
