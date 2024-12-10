@@ -1,3 +1,12 @@
+# 说明
+1、本仓库安装方式
+```
+git clone https://github.com/kissnavel/xiaokeli.git ./plugins/xiaokeli/
+```
+2、<a href="https://github.com/thisee/xiaokeli">原仓库</a>，本仓库基于本人其他自用仓库修改并修复了部分功能，推荐使用原仓库。
+
+# 下方为原仓库描述
+
 <h1>小可莉插件</h1>
 
 <img src="resources/help/xkl.gif" alt="小可莉" width = "400">
@@ -23,8 +32,6 @@ git clone https://github.com/thisee/xiaokeli.git ./plugins/xiaokeli/
 ```
 pnpm i
 ```
-
-
 
 ---
 | 指令 | 说明|
@@ -64,4 +71,3 @@ pnpm i
 |      [小橙子阿](https://m.miyoushe.com/dby/#/collection/1998643)      | 
 |      [HoYo青枫](https://m.miyoushe.com/dby/#/collection/1998324)      | 
 |     [紫喵Azunya](https://m.miyoushe.com/dby/#/collection/2145977)     |
-

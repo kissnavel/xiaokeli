@@ -37,13 +37,9 @@ const ProfileAvatar = {
     if (avatar.isSr) {
       return true
     }
-    
-    
-    
-    
-    
+
     // 检查数据源//改
-    if (!avatar._source || !['enka', 'change', 'miao', 'mgg', 'hutao', 'homo','mys'].includes(avatar._source)) {
+    if (!avatar._source || !['enka', 'change', 'miao', 'mgg', 'hutao', 'homo', 'mys'].includes(avatar._source)) {
       return false
     }
     // 检查武器及天赋

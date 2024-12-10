@@ -25,7 +25,7 @@ export default class MysInfo {
     }
     // ck对应MysUser对象
     this.ckUser = null
-    this.auth = ['dailyNote', 'bbs_sign_info', 'bbs_sign_home', 'bbs_sign', 'ys_ledger', 'compute', 'avatarSkill', 'detail', 'blueprint', 'UserGame', 'deckList', 'avatar_cardList', 'action_cardList','character_detail', 'avatarInfo', 'role_combat']
+    this.auth = ['dailyNote', 'spiralAbyss', 'ys_ledger', 'compute', 'avatarSkill', 'detail', 'blueprint', 'UserGame', 'deckList', 'avatar_cardList', 'action_cardList', 'character', 'character_detail', 'avatarInfo', 'role_combat']
 
     this.gtest = false
     this.mysButton = segment.button([
@@ -416,9 +416,9 @@ export default class MysInfo {
           // res = await handler.call('mys.req.err_', this.e, { mysApi, type, res, data, mysInfo: this }) || res
         // }
         if (res.api == 'character_detail') {
-        this.e.reply(`UID:${this.uid}的米游社面板数据暂时无法查询，等过段时间再试吧～`)
-        }else{
-       if (!isTask) this.e.reply([`UID:${this.uid}，米游社接口报错，暂时无法查询：${res.message || 'error'}`, this.mysButton])
+          this.e.reply(`UID:${this.uid}的米游社面板数据暂时无法查询，等过段时间再试吧～`)
+        } else {
+          if (!isTask) this.e.reply([`UID:${this.uid}，米游社接口报错，暂时无法查询：${res.message || 'error'}`, this.mysButton])
         }
         break
       case 5003:

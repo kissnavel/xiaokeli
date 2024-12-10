@@ -3,12 +3,6 @@ import fetch from 'node-fetch'
 import cfg from '../../../../lib/config/config.js'
 import ApiTool from './apiTool.js'
 
-const game_region = {
-  gs: ['cn_gf01', 'cn_qd01', 'os_usa', 'os_euro', 'os_asia', 'os_cht'],
-  sr: ['prod_gf_cn', 'prod_qd_cn', 'prod_official_usa', 'prod_official_euro', 'prod_official_asia', 'prod_official_cht'],
-  zzz: ['prod_gf_cn', 'prod_gf_cn', 'prod_gf_us', 'prod_gf_eu', 'prod_gf_jp', 'prod_gf_sg']
-}
-
 let HttpsProxyAgent = ''
 export default class MysApi {
   /**
@@ -50,56 +44,51 @@ export default class MysApi {
     if (query) url += `?${query}`
     if (body) body = JSON.stringify(body)
     let headers
-    if(data.headers_){
-    data.headers_['DS']=this.getDs(query, body)
-    headers = data.headers_
-    }else{
-    headers = this.getHeaders(query, body)
+    if (data.headers_) {
+      data.headers_['DS'] = this.getDs(query, body)
+      headers = data.headers_
+    } else {
+      headers = this.getHeaders(query, body)
     }
     return { url, headers, body }
   }
 
   getServer() {
     const _uid = String(this.uid)
-    if (this.game == 'zzz') {
-      if (_uid.length < 10) {
-        return game_region[this.game][0] // 官服
-      }
-
+    const isSr = this.game == 'sr'
+    const isZzz = this.game == 'zzz'
+    if (isZzz) {
       switch (_uid.slice(0, -8)) {
         case '10':
-          return game_region[this.game][2]// 美服
+          return 'prod_gf_us'// 美服
         case '15':
-          return game_region[this.game][3]// 欧服
+          return 'prod_gf_eu'// 欧服
         case '13':
-          return game_region[this.game][4]// 亚服
+          return 'prod_gf_jp'// 亚服
         case '17':
-          return game_region[this.game][5]// 港澳台服
+          return 'prod_gf_sg'// 港澳台服
       }
     } else {
       switch (_uid.slice(0, -8)) {
         case '5':
-          return game_region[this.game][1] // B服
+          return isSr ? 'prod_qd_cn' : 'cn_qd01'// B服
         case '6':
-          return game_region[this.game][2]// 美服
+          return isSr ? 'prod_official_usa' : 'os_usa'// 美服
         case '7':
-          return game_region[this.game][3]// 欧服
+          return isSr ? 'prod_official_euro' : 'os_euro'// 欧服
         case '8':
         case '18':
-          return game_region[this.game][4]// 亚服
+          return isSr ? 'prod_official_asia' : 'os_asia'// 亚服
         case '9':
-          return game_region[this.game][5]// 港澳台服
+          return isSr ? 'prod_official_cht' : 'os_cht'// 港澳台服
       }
     }
-    return game_region[this.game][0] // 官服
+    return (isZzz || isSr) ? 'prod_gf_cn' : 'cn_gf01'// 官服
   }
 
   async getData(type, data = {}, cached = false) {
     if (!this._device_fp && !data?.Getfp && !data?.headers?.['x-rpc-device_fp']&&!data.headers_) {
-      this._device_fp = await this.getData('getFp', {
-        seed_id: this.generateSeed(16),
-        Getfp: true
-      })
+      this._device_fp = await this.getData('getFp', { Getfp: true })
     }
 
     let { url, headers, body } = this.getUrl(type, data)
@@ -163,16 +152,16 @@ export default class MysApi {
 
   getHeaders(query = '', body = '') {
     const cn = {
-      app_version: '2.40.1',
-      User_Agent: `Mozilla/5.0 (Linux; Android 12; ${this.device}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.73 Mobile Safari/537.36 miHoYoBBS/2.40.1`,
+      app_version: '2.73.1',
+      User_Agent: 'Mozilla/5.0 (Linux; Android 11; J9110 Build/55.2.A.4.332; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.179 Mobile Safari/537.36 miHoYoBBS/2.73.1',
       client_type: '5',
       Origin: 'https://webstatic.mihoyo.com',
       X_Requested_With: 'com.mihoyo.hyperion',
       Referer: 'https://webstatic.mihoyo.com/'
     }
     const os = {
-      app_version: '2.55.0',
-      User_Agent: 'Mozilla/5.0 (Linux; Android 11; J9110 Build/55.2.A.4.332; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.179 Mobile Safari/537.36 miHoYoBBSOversea/2.55.0',
+      app_version: '2.57.1',
+      User_Agent: 'Mozilla/5.0 (Linux; Android 11; J9110 Build/55.2.A.4.332; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.179 Mobile Safari/537.36 miHoYoBBSOversea/2.57.1',
       client_type: '2',
       Origin: 'https://act.hoyolab.com',
       X_Requested_With: 'com.mihoyo.hoyolab',
@@ -243,14 +232,5 @@ export default class MysApi {
     }
 
     return null
-  }
-
-  generateSeed(length = 16) {
-    const characters = '0123456789abcdef'
-    let result = ''
-    for (let i = 0; i < length; i++) {
-      result += characters[Math.floor(Math.random() * characters.length)]
-    }
-    return result
   }
 }

@@ -17,20 +17,21 @@ export class mysmb extends plugin {
             /** https://oicqjs.github.io/oicq/#events */
             event: 'message',
             /** 优先级，数字越小等级越高 */
-            priority: -123456789,
+            priority: -114514,
             rule: [{
                 /** 命令正则匹配 */
-                reg: '^#?(星铁)?(小可莉|米游社|m)更新面板$',
+                reg: '^#?(原神|星铁)?(小可莉|米游社|mys)?更新面板$',
                 /** 执行方法 */
                 fnc: 'mys'
             }, {
                 /** 命令正则匹配 */
-                reg: '^#?小可莉面板文件(替换|还原)$',
+                reg: '^#?(小可莉|米游社|mys)?面板文件(替换|还原)$',
                 /** 执行方法 */
                 fnc: 'mbwj'
             }, ]
         });
     }
+
     async mys(e) {
        if(!fs.existsSync('./plugins/xiaokeli/system/default/ProfileAvatar_copy.js')){
             if (!e.isMaster) return false
@@ -40,7 +41,7 @@ export class mysmb extends plugin {
         let CD = (await yaml.get('./plugins/xiaokeli/config/config.yaml')).mbCD
         if (!e.game) e.game = 'gs'
         let uid = e.user.getUid()
-        if (!uid) return e.reply('找不到uid,请：刷新ck 或者 #扫码登录', true)
+        if (!uid) return e.reply('找不到uid,请：#刷新ck 或者 #扫码登录', true)
 
         let now
         if (CD > 0) {
@@ -59,11 +60,14 @@ export class mysmb extends plugin {
             'x-rpc-device_fp': device_fp?.data?.device_fp
         }
         let res, data
-        if (e.game=='gs') {
+        if (e.game == 'gs') {
             res = await MysInfo.get(e, 'character', {
                 headers
             })
-            if (!res.data) return logger.mark('米游社查询失败')
+            if (!res.data) {
+                logger.mark('米游社查询失败')
+                return false
+            }
             let ids = []
             res.data.list.map((value) => {
                 ids.push(value.id)
@@ -71,16 +75,22 @@ export class mysmb extends plugin {
             data = await MysInfo.get(e, 'character_detail', {
                 headers, ids: ids
             })
-            if (!data.data) return logger.mark('米游社查询失败')
+            if (!data.data) {
+                logger.mark('米游社查询失败')
+                return false
+            }
             await this.gs_mys(e, data, uid)
-        } else if(e.game=='sr'){
+        } else if (e.game == 'sr'){
             data = await MysInfo.get(this.e, 'avatarInfo', {
                 headers
             })
-            if (!data.data) return logger.mark('米游社查询失败')
+            if (!data.data) {
+                logger.mark('米游社查询失败')
+                return false
+            }
             await this.sr_mys(e, data, uid)
-        }else{
-        return false
+        } else {
+            return false
         }
         //加载面板列表图
         await ProfileList.reload(e)
@@ -91,10 +101,10 @@ export class mysmb extends plugin {
             })
         }
         return true
-
     }
+
     /*原神*/
-  async gs_mys(e, data, uid) {
+    async gs_mys(e, data, uid) {
         let avatars = {}
         this.property_map = data.data.property_map
 
@@ -376,11 +386,8 @@ export class mysmb extends plugin {
         fs.writeFileSync(path, JSON.stringify(mb), 'utf-8')
     }
 
-
-
-
     /*星铁*/
-  async sr_mys(e, data, uid) {
+    async sr_mys(e, data, uid) {
         let avatars = {}
         this.property_info = data.data.property_info
         let path = `./data/PlayerData/sr/${uid}.json`
@@ -643,28 +650,25 @@ export class mysmb extends plugin {
         fs.writeFileSync(path, JSON.stringify(mb), 'utf-8')
     }
 
-async mbwj(e){
- if (!e.isMaster) return false
-  if(e.msg.includes('替换')){
-  fs.cpSync('./plugins/miao-plugin/models/avatar/ProfileAvatar.js','./plugins/xiaokeli/system/default/ProfileAvatar_copy.js')
-  fs.cpSync('./plugins/xiaokeli/system/copy/ProfileAvatar.js','./plugins/miao-plugin/models/avatar/ProfileAvatar.js')
-  await e.reply('文件替换完成,准备重启~', true)
-  new Restart(e).restart()
-  return true
-  }else{
-  if(!fs.existsSync('./plugins/xiaokeli/system/default/ProfileAvatar_copy.js')){
-  await e.reply('没找到原文件。。。', true)
-    return true
-  }
-  fs.cpSync('./plugins/xiaokeli/system/default/ProfileAvatar_copy.js','./plugins/miao-plugin/models/avatar/ProfileAvatar.js')
-  fs.unlinkSync('./plugins/xiaokeli/system/default/ProfileAvatar_copy.js')
-  e.reply('文件还原成功！', true)
-  return
-  }
+    async mbwj(e) {
+        if (!e.isMaster) return false
+
+        if (e.msg.includes('替换')) {
+            fs.cpSync('./plugins/miao-plugin/models/avatar/ProfileAvatar.js','./plugins/xiaokeli/system/default/ProfileAvatar_copy.js')
+            fs.cpSync('./plugins/xiaokeli/system/copy/ProfileAvatar.js','./plugins/miao-plugin/models/avatar/ProfileAvatar.js')
+            await e.reply('文件替换完成！准备重启~', true)
+            new Restart(e).restart()
+            return true
+        } else {
+            if (!fs.existsSync('./plugins/xiaokeli/system/default/ProfileAvatar_copy.js')) {
+            await e.reply('没找到原文件。。。', true)
+            return true
+            }
+            fs.cpSync('./plugins/xiaokeli/system/default/ProfileAvatar_copy.js','./plugins/miao-plugin/models/avatar/ProfileAvatar.js')
+            fs.unlinkSync('./plugins/xiaokeli/system/default/ProfileAvatar_copy.js')
+            await e.reply('文件还原成功！准备重启~', true)
+            new Restart(e).restart()
+            return true
+        }
+    }
 }
-
-
-
-
-}
-
