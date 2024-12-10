@@ -20,7 +20,7 @@ export class mysmb extends plugin {
             priority: -114514,
             rule: [{
                 /** 命令正则匹配 */
-                reg: '^#?(原神|星铁)?(小可莉|米游社|mys)?更新面板$',
+                reg: '^#?(原神|星铁)?(小可莉|米游社|mys)?(全部面板更新|更新全部面板|获取游戏角色详情|更新面板|面板更新)$',
                 /** 执行方法 */
                 fnc: 'mys'
             }, {
@@ -80,7 +80,7 @@ export class mysmb extends plugin {
                 return false
             }
             await this.gs_mys(e, data, uid)
-        } else if (e.game == 'sr'){
+        } else if (e.game == 'sr') {
             data = await MysInfo.get(this.e, 'avatarInfo', {
                 headers
             })
