@@ -18,10 +18,10 @@
       desc: '回复图片，让Bot再发一张'
     - title: '(每日Npc委托名)'
       desc: '查询每日委托是否带有成就'
-    - title: 'm更新面板   (米游社更新面板)'
-      desc: '通过米游社更新原神面板'
-    - title: '*m更新面板  (*米游社更新面板)'
-      desc: '通过米游社更新星铁面板'
+    - title: '#更新面板'
+      desc: '通过米游社更新原神面板，需使用#面板文件替换并且需绑定ck'
+    - title: '*更新面板'
+      desc: '通过米游社更新星铁面板，需使用#面板文件替换并且需绑定ck'
       
 - group: bilibili指令
   list:
@@ -62,4 +62,4 @@
     - title: '小可莉面板文件还原'
       desc: '如[#更新]遇到miao-plugin/models/avatar/ProfileAvatar.js文件冲突可用该命令还原'
     - title: '小可莉面板文件替换'
-      desc: '使用m更新面板，需要修改./plugins/miao-plugin/models/avatar/ProfileAvatar.js文件'
+      desc: '使用(#|*)更新面板，需要修改./plugins/miao-plugin/models/avatar/ProfileAvatar.js文件'
